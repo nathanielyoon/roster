@@ -1,0 +1,29 @@
+{
+  "license": "0BSD",
+  "compilerOptions": {
+    "exactOptionalPropertyTypes": true,
+    "verbatimModuleSyntax": true
+  },
+  "lint": {
+    "rules": {
+      "include": [
+        "camelcase",
+        "eqeqeq",
+        "no-console",
+        "no-external-import",
+        "no-inferrable-types",
+        "no-self-compare",
+        "no-sparse-arrays",
+        "no-useless-rename",
+        "prefer-ascii"
+      ],
+      "exclude": [
+        "ban-types",
+        "no-cond-assign",
+        "no-control-regex",
+        "no-explicit-any",
+        "no-invalid-regexp"
+      ]
+    }
+  }
+}
