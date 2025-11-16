@@ -1,4 +1,5 @@
 import { int, nil, obj, str } from "@libn/json/build";
+import type { Instance } from "@libn/json/schema";
 
 const table =
   (name: string) =>
@@ -20,7 +21,9 @@ const table =
 );
 CREATE TRIGGER IF NOT EXISTS update_timestamp_${name}
 AFTER UPDATE OF ${columns.join(", ")} ON ${name}
-BEGIN UPDATE ${name} SET updated = CURRENT_TIMESTAMP WHERE id = NEW.id; END;`;
+BEGIN
+  UPDATE ${name} SET updated = CURRENT_TIMESTAMP WHERE id = NEW.id;
+END;`;
   };
 export const CREATE = [
   "PRAGMA foreign_keys = ON;",
@@ -48,29 +51,36 @@ const META = {
   updated: str({ format: "date-time" }),
   note: str(),
 };
-export const person = obj({
+export const PERSON = obj({
   ...META,
   name: str({ minLength: 1, maxLength: 255 }),
   info: str({ pattern: "^\\{.*\\}$" }),
 });
-export const course = obj({
+export const COURSE = obj({
   ...META,
   name: str({ minLength: 1, maxLength: 255 }),
   info: str({ pattern: "^\\{.*\\}$" }),
 });
-export const family = obj({
+export const FAMILY = obj({
   ...META,
   upper: int(),
   lower: int(),
 });
-export const signup = obj({
+export const SIGNUP = obj({
   ...META,
   course: int(),
   person: int(),
 });
-export const record = obj({
+export const RECORD = obj({
   ...META,
   signup: int(),
   began: nil(str({ format: "date-time" })),
   ended: nil(str({ format: "date-time" })),
 });
+export const TABLES = {
+  person: PERSON,
+  course: COURSE,
+  family: FAMILY,
+  signup: SIGNUP,
+  record: RECORD,
+};
