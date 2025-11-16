@@ -5,7 +5,7 @@ const DATE = {
   updated: str({ format: "date-time" }),
 };
 const META = {
-  key: int({ minimum: 0, maximum: 0xffffffff }),
+  id: int({ minimum: 0, maximum: 0xffffffff }),
   ...DATE,
   name: str({ minLength: 1, maxLength: 255 }),
   info: str({ pattern: "^\\{.*\\}$" }),
