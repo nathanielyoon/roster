@@ -29,5 +29,8 @@
         "no-invalid-regexp"
       ]
     }
+  },
+  "imports": {
+    "@libn/json": "jsr:@libn/json@^0.4.1"
   }
 }

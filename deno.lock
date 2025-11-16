@@ -1,0 +1,23 @@
+{
+  "version": "5",
+  "specifiers": {
+    "jsr:@libn/base@0.4": "0.4.0",
+    "jsr:@libn/json@~0.4.1": "0.4.1"
+  },
+  "jsr": {
+    "@libn/base@0.4.0": {
+      "integrity": "7b65e692e90a5b4aee82d4edb3493507a5673611a8afec21ef781eba75c639e5"
+    },
+    "@libn/json@0.4.1": {
+      "integrity": "2f489d376f259f83aa83142c5ea94e17880dd6841d7e58cc6bb3d0e5b2985bd2",
+      "dependencies": [
+        "jsr:@libn/base"
+      ]
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@libn/json@~0.4.1"
+    ]
+  }
+}
