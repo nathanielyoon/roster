@@ -1,21 +1,25 @@
 {
   "license": "0BSD",
   "compilerOptions": {
+    "erasableSyntaxOnly": true,
     "exactOptionalPropertyTypes": true,
     "verbatimModuleSyntax": true
   },
   "lint": {
     "rules": {
+      "tags": ["recommended"],
       "include": [
         "camelcase",
         "eqeqeq",
         "no-console",
+        "no-eval",
         "no-external-import",
-        "no-inferrable-types",
         "no-self-compare",
         "no-sparse-arrays",
+        "no-throw-literal",
         "no-useless-rename",
-        "prefer-ascii"
+        "prefer-ascii",
+        "triple-slash-reference"
       ],
       "exclude": [
         "ban-types",
