@@ -3,6 +3,9 @@
   "specifiers": {
     "jsr:@libn/base@0.4": "0.4.0",
     "jsr:@libn/json@~0.4.3": "0.4.3",
+    "jsr:@libn/result@~0.4.1": "0.4.1",
+    "jsr:@libn/router@~0.1.2": "0.1.2",
+    "jsr:@libn/types@~0.1.1": "0.1.1",
     "npm:@types/node@^24.10.1": "24.10.1"
   },
   "jsr": {
@@ -14,6 +17,15 @@
       "dependencies": [
         "jsr:@libn/base"
       ]
+    },
+    "@libn/result@0.4.1": {
+      "integrity": "a04d35c44f185f6bf2c784fdc02db85912fb53323bae2113dab5273ecc7a7070"
+    },
+    "@libn/router@0.1.2": {
+      "integrity": "a4f0c3c74503b3a8ead83a2e70496e4f0e8d84e857ce67cfbfa6db6b6510fde3"
+    },
+    "@libn/types@0.1.1": {
+      "integrity": "0655b467bcdec7298c5afa11162b3d83eae2a07c72948bc469e51f2242b26bf0"
     }
   },
   "npm": {
@@ -30,6 +42,9 @@
   "workspace": {
     "dependencies": [
       "jsr:@libn/json@~0.4.3",
+      "jsr:@libn/result@~0.4.1",
+      "jsr:@libn/router@~0.1.2",
+      "jsr:@libn/types@~0.1.1",
       "npm:@types/node@^24.10.1"
     ]
   }
