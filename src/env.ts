@@ -7,10 +7,7 @@ export interface PreparedStatement<A extends string[]> {
   };
 }
 export interface Database {
-  prepare: <A extends string[] = []>(
-    query: string,
-    columns?: never,
-  ) => PreparedStatement<A>;
+  prepare: <A extends string[] = []>(query: string) => PreparedStatement<A>;
   exec: (query: string) => Promise<{ count: number; duration: number }>;
 }
 export interface Env {

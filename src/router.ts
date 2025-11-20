@@ -20,14 +20,13 @@ router.route("PUT", "/v1/person", async ({ req, res }, { DB }) => {
   return res.json(await DB.prepare(c.sql).bind(...c.replace).run());
 });
 router.route("GET", "/v1/person/?id", async ({ path, res }, { DB }) => {
-  if (isNaN(+path.id)) {
-    return res.error(Error("Invalid ID", { cause: path.id }));
-  }
+  const id = +path.id;
+  if (isNaN(id)) return res.error(Error("Invalid ID", { cause: path.id }));
   return res.json(
     await DB.prepare(
       `${
         select("person", { name: true, info: true, note: true })
-      } WHERE id = ?;`,
-    ).bind(path.id).raw(),
+      } WHERE person.id = ?;`,
+    ).bind(id).raw(),
   );
 });

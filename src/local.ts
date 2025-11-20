@@ -4,11 +4,9 @@ import { router } from "./router.ts";
 import { CREATE } from "./tables.ts";
 
 class Prepared<A extends string[]> implements PreparedStatement<A> {
-  private columns;
   private statement;
   private variables: (null | number | bigint | string)[] = [];
-  constructor(columns: A, statement: StatementSync) {
-    this.columns = columns;
+  constructor(statement: StatementSync) {
     this.statement = statement;
   }
   bind(...variables: (null | number | bigint | string)[]) {
@@ -18,19 +16,10 @@ class Prepared<A extends string[]> implements PreparedStatement<A> {
   run<A>() {
     return Promise.resolve(this.statement.run(...this.variables) as A);
   }
-  raw(
-    options?: { columnNames?: boolean },
-  ): ReturnType<PreparedStatement<A>["raw"]> {
-    const all = this.statement.all(...this.variables);
-    const rows = Array(all.length);
-    for (let row, z = 0, y; z < all.length; ++z) {
-      row = all[z], rows[z] = Array(this.columns.length);
-      for (y = 0; y < this.columns.length; ++y) {
-        rows[z][y] = row[this.columns[y]];
-      }
-    }
-    if (options?.columnNames) rows.unshift(this.columns);
-    return Promise.resolve<any>(rows);
+  raw(): ReturnType<PreparedStatement<A>["raw"]> {
+    return Promise.resolve<any>(
+      this.statement.all(...this.variables).map(($) => Object.values($)),
+    );
   }
 }
 export class Sqlite implements Database {
@@ -39,8 +28,8 @@ export class Sqlite implements Database {
     this.database = new DatabaseSync(path);
     this.database.exec(CREATE.join("\n\n"));
   }
-  prepare<A extends string[]>(query: string, columns?: string[]) {
-    return new Prepared<A>((columns ?? []) as A, this.database.prepare(query));
+  prepare<A extends string[]>(query: string) {
+    return new Prepared<A>(this.database.prepare(query));
   }
   exec(query: string) {
     const time = Date.now();
