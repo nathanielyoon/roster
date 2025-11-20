@@ -1,0 +1,15 @@
+{
+  "name": "roster",
+  "main": "./worker.js",
+  "compatibility_date": "2025-11-19",
+  "workers_dev": true,
+  "preview_urls": false,
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "roster",
+    "database_id": "7798bf46-2bd0-41d9-87ca-28932651cf24"
+  }],
+  "build": {
+    "command": "deno bundle --output ./worker.js ./src/router.ts"
+  }
+}

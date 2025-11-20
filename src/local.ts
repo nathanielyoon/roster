@@ -1,6 +1,6 @@
 import { DatabaseSync, type StatementSync } from "node:sqlite";
 import type { Database, PreparedStatement } from "./env.ts";
-import { router } from "./router.ts";
+import router from "./router.ts";
 import { CREATE } from "./tables.ts";
 
 class Prepared<A extends string[]> implements PreparedStatement<A> {
