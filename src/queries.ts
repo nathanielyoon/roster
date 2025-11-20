@@ -14,7 +14,7 @@ const filter = (columns: { [_: string]: boolean | undefined }) =>
   Object.entries(columns).filter(($) => $[1]).map(($) => $[0]);
 export type Statement = {
   sql: string;
-  replace: (null | number | string)[];
+  args: (null | number | string)[];
 };
 export const insert = <A extends keyof typeof TABLES>(
   into: A,
@@ -25,7 +25,7 @@ export const insert = <A extends keyof typeof TABLES>(
     sql: `INSERT INTO ${into} (${
       entries.map(($) => $[0]).join(", ")
     }) VALUES (${"?, ".repeat(entries.length).replace(/, $/, "")});`,
-    replace: entries.map(($) => $[1]),
+    args: entries.map(($) => $[1]),
   } satisfies Statement;
 };
 export const select = <A extends keyof typeof TABLES>(
@@ -48,7 +48,7 @@ export const selectLowers = (
 ) => ({
   sql:
     `${select} INNER JOIN family ON family.upper = ? AND family.lower = person.id;`,
-  replace: [upperId],
+  args: [upperId],
 } satisfies Statement);
 export const selectUppers = (
   lowerId: number,
