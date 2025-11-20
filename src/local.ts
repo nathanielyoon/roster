@@ -16,7 +16,7 @@ class Prepared<A extends string[]> implements PreparedStatement<A> {
     return this;
   }
   run<A>() {
-    return Promise.resolve(this.statement.run() as A);
+    return Promise.resolve(this.statement.run(...this.variables) as A);
   }
   raw(
     options?: { columnNames?: boolean },
@@ -37,9 +37,9 @@ export class Sqlite implements Database {
   private database;
   constructor(path: string | URL) {
     this.database = new DatabaseSync(path);
+    this.database.exec(CREATE.join("\n\n"));
   }
   prepare<A extends string[]>(query: string, columns?: string[]) {
-    console.log(this.database.prepare(query));
     return new Prepared<A>((columns ?? []) as A, this.database.prepare(query));
   }
   exec(query: string) {
@@ -53,7 +53,6 @@ export class Sqlite implements Database {
 }
 
 const local = new Sqlite(":memory:");
-await local.exec(CREATE.join("\n\n"));
 export default {
   fetch: (request) => router.fetch(request, { DB: local }),
 } satisfies Deno.ServeDefaultExport;
