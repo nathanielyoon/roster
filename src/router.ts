@@ -48,7 +48,7 @@ export default new Router<[Env]>().route(
   "GET /v1/person/#id",
   exec(async function* ({ path }, { DB }) {
     const id = +path.id;
-    const person = yield* await run<{ results: unknown[] }>(DB, {
+    const person = yield* await run(DB, {
       sql: `${
         select("person", {
           id: true,
@@ -61,30 +61,25 @@ export default new Router<[Env]>().route(
       } WHERE person.id = ?;`,
       args: [id],
     });
-    const lowers = yield* await run<{ results: unknown[] }>(DB, {
+    const lowers = yield* await run(DB, {
       sql: `${
         select("person", { id: true, name: true })
       } INNER JOIN family ON family.upper = ? AND family.lower = person.id;`,
       args: [id],
     });
-    const uppers = yield* await run<{ results: unknown[] }>(DB, {
+    const uppers = yield* await run(DB, {
       sql: `${
         select("person", { id: true, name: true })
       } INNER JOIN family ON family.lower = ? AND family.upper = person.id;`,
       args: [id],
     });
-    const signups = yield* await run<{ results: unknown[] }>(DB, {
+    const signups = yield* await run(DB, {
       sql: `${
         select("course", { id: true, name: true })
       } INNER JOIN signup ON signup.person = ? AND signup.course = course.id;`,
       args: [id],
     });
-    return Response.json({
-      person: person.results,
-      lowers: lowers.results,
-      uppers: uppers.results,
-      signups: signups.results,
-    });
+    return Response.json({ person, lowers, uppers, signups });
   }),
 ).route(
   "DELETE /v1/person/#id",
@@ -113,7 +108,7 @@ export default new Router<[Env]>().route(
   "GET /v1/course/#id",
   exec(async function* ({ path }, { DB }) {
     const id = +path.id;
-    const course = yield* await run<{ results: unknown[] }>(DB, {
+    const course = yield* await run(DB, {
       sql: `${
         select("course", {
           id: true,
@@ -126,13 +121,13 @@ export default new Router<[Env]>().route(
       } WHERE course.id = ?;`,
       args: [id],
     });
-    const signups = yield* await run<{ results: unknown[] }>(DB, {
+    const signups = yield* await run(DB, {
       sql: `${
         select("person", { id: true, name: true })
       } INNER JOIN signup ON signup.course = ? AND signup.person = person.id;`,
       args: [id],
     });
-    return Response.json({ course: course.results, signups: signups.results });
+    return Response.json({ course, signups });
   }),
 ).route(
   "DELETE /v1/course/#id",
