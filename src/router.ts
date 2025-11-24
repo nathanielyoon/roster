@@ -1,16 +1,15 @@
-import { arr, obj } from "@libn/json/build";
+import { arr, type Data, obj, type Type } from "@libn/json/schema";
 import { compile, parse } from "@libn/json/check";
-import type { Instance, Schema } from "@libn/json/schema";
 import { error, Router } from "@libn/router";
 import type { Env } from "./env.ts";
 import { insert, select } from "./queries.ts";
 import { PERSON } from "./tables.ts";
 
 const person = obj(PERSON.properties, { required: ["name", "info"] });
-const body = async <A extends Schema, B>(
+const body = async <A extends Type, B>(
   schema: A,
   request: Request,
-  use: ($: Instance<A>) => B,
+  use: ($: Data<A>) => B,
 ): Promise<Awaited<B> | Response> => {
   const result = parse(compile(schema), await request.json());
   if (result.state) return await use(result.value);

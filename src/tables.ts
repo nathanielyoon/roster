@@ -1,5 +1,4 @@
-import { int, nil, obj, str } from "@libn/json/build";
-import type { Instance } from "@libn/json/schema";
+import { type Data, int, nil, obj, str } from "@libn/json/schema";
 
 const table =
   (name: string) =>

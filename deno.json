@@ -31,10 +31,10 @@
     }
   },
   "imports": {
-    "@libn/json": "jsr:@libn/json@^0.4.3",
+    "@libn/json": "jsr:@libn/json@^0.4.6",
     "@libn/result": "jsr:@libn/result@^0.4.1",
-    "@libn/router": "jsr:@libn/router@^0.2.1",
-    "@libn/types": "jsr:@libn/types@^0.1.1",
+    "@libn/router": "jsr:@libn/router@^0.2.2",
+    "@libn/types": "jsr:@libn/types@^0.4.0",
     "@types/node": "npm:@types/node@^24.10.1"
   },
   "tasks": {

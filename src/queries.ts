@@ -1,4 +1,4 @@
-import type { Instance, Obj } from "@libn/json/schema";
+import type { Data } from "@libn/json/schema";
 import { type COURSE, type PERSON, TABLES } from "./tables.ts";
 
 // 1. Student/family info, from bulk data or individual application
@@ -18,7 +18,7 @@ export type Statement = {
 };
 export const insert = <A extends keyof typeof TABLES>(
   into: A,
-  row: Omit<Instance<typeof TABLES[A]>, "id" | "created" | "updated" | "note">,
+  row: Omit<Data<typeof TABLES[A]>, "id" | "created" | "updated" | "note">,
 ) => {
   const entries = Object.entries<any>({ note: "", ...row });
   return {
@@ -30,7 +30,7 @@ export const insert = <A extends keyof typeof TABLES>(
 };
 export const select = <A extends keyof typeof TABLES>(
   table: A,
-  columns: { [_ in keyof Instance<typeof TABLES[A]>]?: boolean },
+  columns: { [_ in keyof Data<typeof TABLES[A]>]?: boolean },
 ) => {
   const keys = Object.keys(columns) as (keyof typeof columns & string)[];
   let selected = "";
