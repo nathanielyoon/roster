@@ -10,7 +10,7 @@ const partial = <A extends { [_: string]: Type }>($: { properties: A }) =>
   obj($.properties, {
     required: Object.keys($.properties).filter(($) =>
       !/^(?:id|created|updated)$/.test($)
-    ) as (Exclude<keyof A & string, "id" | "created" | "updated" | "note">)[],
+    ) as (Exclude<keyof A & string, "id" | "created" | "updated">)[],
   });
 const CHECKS = {
   persons: compile(arr(partial(PERSON))),
@@ -140,10 +140,11 @@ export default new Router<[Env]>().route(
   }),
 ).route(
   "PUT /v1/family/#upper/#lower",
-  exec(async function* ({ path }, { DB }) {
+  exec(async function* ({ path, request }, { DB }) {
     const query = insert("family", [{
       upper: +path.upper,
       lower: +path.lower,
+      note: await request.text(),
     }]);
     return Response.json(yield* await run(DB, query));
   }),
@@ -158,10 +159,11 @@ export default new Router<[Env]>().route(
   }),
 ).route(
   "PUT /v1/signup/#course/#person",
-  exec(async function* ({ path }, { DB }) {
+  exec(async function* ({ path, request }, { DB }) {
     const query = insert("signup", [{
       course: +path.course,
       person: +path.person,
+      note: await request.text(),
     }]);
     return Response.json(yield* await run(DB, query));
   }),

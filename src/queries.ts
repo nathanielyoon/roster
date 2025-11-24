@@ -9,10 +9,7 @@ const repeat = ($: string, length: number) =>
   Array.from({ length }, () => $).join(", ");
 export const insert = <A extends keyof typeof TABLES>(
   into: A,
-  rows: readonly Omit<
-    Data<typeof TABLES[A]>,
-    "id" | "created" | "updated" | "note"
-  >[],
+  rows: readonly Omit<Data<typeof TABLES[A]>, "id" | "created" | "updated">[],
 ): Statement => {
   const keys = Object.keys(TABLES[into].properties).filter(($) =>
     !/^(?:id|created|updated)$/.test($)
