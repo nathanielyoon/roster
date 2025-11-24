@@ -36,8 +36,5 @@
     "@libn/router": "jsr:@libn/router@^0.2.3",
     "@libn/types": "jsr:@libn/types@^0.4.0",
     "@types/node": "npm:@types/node@^24.10.1"
-  },
-  "tasks": {
-    "wrangle": "deno bundle --output ./worker.js ./src/router.ts && (wrangler deploy; rm -f ./worker.js);"
   }
 }

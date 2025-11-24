@@ -1,14 +1,16 @@
 import { arr, obj, type Type } from "@libn/json/schema";
-import { compile, parse } from "@libn/json/check";
+import { type Check, compile, parse } from "@libn/json/check";
 import { Router } from "@libn/router";
 import type { Database, Env } from "./env.ts";
 import { insert, select, type Statement, transact } from "./queries.ts";
 import { PERSON } from "./tables.ts";
 import { exec, safe } from "@libn/result";
 
-const person = obj(PERSON.properties, { required: ["name", "info"] });
-const body = safe(async <A extends Type>(type: A, request: Request) => {
-  const result = parse(compile(type), await request.json());
+const PARTIAL = obj(PERSON.properties, { required: ["name", "info"] });
+const person = compile(PARTIAL);
+const people = compile(arr(PARTIAL));
+const body = safe(async <A extends Type>(type: Check<A>, request: Request) => {
+  const result = parse(type, await request.json());
   if (result.state) return result.value;
   throw Error("Invalid body", { cause: result.value });
 });
@@ -18,7 +20,7 @@ const run = safe(<A>(db: Database, query: Statement) =>
 export default new Router<[Env]>().route(
   "POST /v1/person",
   exec(async function* ({ request }, { DB }) {
-    const rows = yield* await body(arr(person), request);
+    const rows = yield* await body(people, request);
     const query = transact(rows.map(($) => insert("person", $)));
     return Response.json(yield* await run(DB, query));
   }),
@@ -40,9 +42,9 @@ export default new Router<[Env]>().route(
     return Response.json(result);
   }),
 ).route(
-  "PUT /v1/person",
-  exec(async function* ({ request }, { DB }) {
-    const row = yield* await body(person, request);
+  "PUT /v1/person/#id",
+  exec(async function* ({ path, request }, { DB }) {
+    const row = { ...yield* await body(person, request), id: path.id };
     const query = insert("person", row);
     return Response.json(yield* await run(DB, query));
   }),
