@@ -4,7 +4,7 @@
     "jsr:@libn/base@~0.4.1": "0.4.1",
     "jsr:@libn/json@~0.4.6": "0.4.6",
     "jsr:@libn/result@~0.4.1": "0.4.1",
-    "jsr:@libn/router@~0.2.2": "0.2.2",
+    "jsr:@libn/router@~0.2.3": "0.2.3",
     "jsr:@libn/types@0.4": "0.4.0",
     "npm:@types/node@^24.10.1": "24.10.1"
   },
@@ -15,14 +15,19 @@
     "@libn/json@0.4.6": {
       "integrity": "33ddb87d32c964d77f0a98cc8fac7f8fecaa0e78935388336142081d24c4dba3",
       "dependencies": [
-        "jsr:@libn/base"
+        "jsr:@libn/base",
+        "jsr:@libn/result",
+        "jsr:@libn/types"
       ]
     },
     "@libn/result@0.4.1": {
       "integrity": "a04d35c44f185f6bf2c784fdc02db85912fb53323bae2113dab5273ecc7a7070"
     },
-    "@libn/router@0.2.2": {
-      "integrity": "08c205289cd1f0652fb3740b1483d7cd8218fc81b9ba003eed27cc1cbc15a87d"
+    "@libn/router@0.2.3": {
+      "integrity": "ee3e649ae2104d07a8505e76a5118bdf2084fc20e130a02df08998476ffdd74b",
+      "dependencies": [
+        "jsr:@libn/result"
+      ]
     },
     "@libn/types@0.4.0": {
       "integrity": "bf84882fcec65dfc9c3e6eb639ab61f808ae5b0e462328e7de6ba7021dd7043c"
@@ -43,7 +48,7 @@
     "dependencies": [
       "jsr:@libn/json@~0.4.6",
       "jsr:@libn/result@~0.4.1",
-      "jsr:@libn/router@~0.2.2",
+      "jsr:@libn/router@~0.2.3",
       "jsr:@libn/types@0.4",
       "npm:@types/node@^24.10.1"
     ]

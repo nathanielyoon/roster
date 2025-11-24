@@ -19,14 +19,14 @@ export type Statement = {
 export const insert = <A extends keyof typeof TABLES>(
   into: A,
   row: Omit<Data<typeof TABLES[A]>, "id" | "created" | "updated" | "note">,
-) => {
+): Statement => {
   const entries = Object.entries<any>({ note: "", ...row });
   return {
     sql: `INSERT INTO ${into} (${
       entries.map(($) => $[0]).join(", ")
     }) VALUES (${"?, ".repeat(entries.length).replace(/, $/, "")});`,
     args: entries.map(($) => $[1]),
-  } satisfies Statement;
+  };
 };
 export const select = <A extends keyof typeof TABLES>(
   table: A,
@@ -45,16 +45,22 @@ export const select = <A extends keyof typeof TABLES>(
 export const selectLowers = (
   upperId: number,
   select: Branded<string, "select person">,
-) => ({
+): Statement => ({
   sql:
     `${select} INNER JOIN family ON family.upper = ? AND family.lower = person.id;`,
   args: [upperId],
-} satisfies Statement);
+});
 export const selectUppers = (
   lowerId: number,
   select: Branded<string, "select person">,
-) => ({
+): Statement => ({
   sql:
     `${select} INNER JOIN family ON family.lower = ? AND family.upper = person.id;`,
-  replace: [lowerId],
+  args: [lowerId],
+});
+export const transact = (statements: Statement[]): Statement => ({
+  sql: `BEGIN;
+${statements.map(($) => $.sql.replace(/(?<!;)$/, ";")).join("\n")}
+END;`,
+  args: statements.flatMap(($) => $.args),
 });

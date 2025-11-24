@@ -7,7 +7,7 @@ const table =
   id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  note TEXT NOT NULL DEFAULT "",`;
+  note TEXT NOT NULL DEFAULT '',`;
     for (let z = 0; z < columns.length; ++z) {
       const column = columns[z];
       if (Array.isArray(column)) {
