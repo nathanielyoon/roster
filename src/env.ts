@@ -1,14 +1,11 @@
-export interface PreparedStatement<A extends string[]> {
-  bind: (...use: (null | number | bigint | string)[]) => PreparedStatement<A>;
+export interface PreparedStatement {
+  bind: (...use: (null | number | bigint | string)[]) => PreparedStatement;
   run: <B>() => Promise<B>;
-  raw: {
-    <B extends unknown[]>(): Promise<B[]>;
-    <B extends unknown[]>(options: { columnNames: true }): Promise<[A, ...B[]]>;
-  };
 }
 export interface Database {
-  prepare: <A extends string[] = []>(query: string) => PreparedStatement<A>;
+  prepare: (query: string) => PreparedStatement;
   exec: (query: string) => Promise<{ count: number; duration: number }>;
+  batch: (statements: PreparedStatement[]) => Promise<void>;
 }
 export interface Env {
   DB: Database;

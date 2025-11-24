@@ -1,32 +1,29 @@
 import type { Data } from "@libn/json/schema";
-import { type COURSE, type PERSON, TABLES } from "./tables.ts";
+import { TABLES } from "./tables.ts";
 
-// 1. Student/family info, from bulk data or individual application
-// 2. Create different courses
-// 3. Sign up
-// 4. Take attendance (by phone?)
-// 5. Generate spreadsheet of attendance
-
-declare const BRAND: unique symbol;
-type Branded<A, B extends string> = A & { [BRAND]: B };
-const brand = <A, B extends string>($: A, value: B) => $ as Branded<A, B>;
-const filter = (columns: { [_: string]: boolean | undefined }) =>
-  Object.entries(columns).filter(($) => $[1]).map(($) => $[0]);
 export type Statement = {
   sql: string;
   args: (null | number | string)[];
 };
+const repeat = ($: string, length: number) =>
+  Array.from({ length }, () => $).join(", ");
 export const insert = <A extends keyof typeof TABLES>(
   into: A,
-  row: Omit<Data<typeof TABLES[A]>, "id" | "created" | "updated" | "note">,
+  rows: readonly Omit<
+    Data<typeof TABLES[A]>,
+    "id" | "created" | "updated" | "note"
+  >[],
 ): Statement => {
-  const entries = Object.entries<any>({ note: "", ...row });
+  const keys = Object.keys(TABLES[into].properties).filter(($) =>
+    !/^(?:id|created|updated)$/.test($)
+  ) as (keyof typeof rows[number])[];
+  const values = `(${repeat("?", keys.length)})`;
   return {
-    sql: `INSERT INTO ${into} (${
-      entries.map(($) => $[0]).join(", ")
-    }) VALUES (${"?, ".repeat(entries.length).replace(/, $/, "")});`,
-    args: entries.map(($) => $[1]),
-  };
+    sql: `INSERT INTO ${into} (${keys.join(", ")}) VALUES ${
+      repeat(values, rows.length)
+    }`,
+    args: rows.flatMap(($) => keys.map((key) => $[key] ?? null)),
+  } as Statement;
 };
 export const select = <A extends keyof typeof TABLES>(
   table: A,
@@ -37,30 +34,5 @@ export const select = <A extends keyof typeof TABLES>(
   for (let z = 0; z < keys.length; ++z) {
     if (columns[keys[z]]) selected += `${table}.${keys[z]}, `;
   }
-  return brand(
-    `SELECT ${selected.replace(/, $/, "")} FROM ${table}`,
-    `select ${table}`,
-  );
+  return `SELECT ${selected.replace(/, $/, "")} FROM ${table}`;
 };
-export const selectLowers = (
-  upperId: number,
-  select: Branded<string, "select person">,
-): Statement => ({
-  sql:
-    `${select} INNER JOIN family ON family.upper = ? AND family.lower = person.id;`,
-  args: [upperId],
-});
-export const selectUppers = (
-  lowerId: number,
-  select: Branded<string, "select person">,
-): Statement => ({
-  sql:
-    `${select} INNER JOIN family ON family.lower = ? AND family.upper = person.id;`,
-  args: [lowerId],
-});
-export const transact = (statements: Statement[]): Statement => ({
-  sql: `BEGIN;
-${statements.map(($) => $.sql.replace(/(?<!;)$/, ";")).join("\n")}
-END;`,
-  args: statements.flatMap(($) => $.args),
-});

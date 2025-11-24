@@ -1,7 +1,7 @@
-import { type Data, int, nil, obj, str } from "@libn/json/schema";
+import { int, nil, obj, str } from "@libn/json/schema";
 
 const table =
-  (name: string) =>
+  (name: string, ...indexes: string[][]) =>
   ($: TemplateStringsArray, ...columns: (string | [string, string])[]) => {
     let sql = `CREATE TABLE IF NOT EXISTS ${name} (
   id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -22,24 +22,31 @@ CREATE TRIGGER IF NOT EXISTS update_timestamp_${name}
 AFTER UPDATE OF ${columns.join(", ")} ON ${name}
 BEGIN
   UPDATE ${name} SET updated = CURRENT_TIMESTAMP WHERE id = NEW.id;
-END;`;
+END;
+${
+      indexes.map(($) =>
+        `CREATE UNIQUE INDEX IF NOT EXISTS ${
+          $.join("_")
+        }_${table} ON ${table} (${$.join(", ")})`
+      )
+    };`;
   };
 export const CREATE = [
   "PRAGMA foreign_keys = ON;",
-  table("person")`
+  table("person", ["id"], ["name"])`
   ${"name"} VARCHAR(255),
   ${"info"} TEXT NOT NULL,`,
-  table("course")`
+  table("course", ["id"], ["name"])`
   ${"name"} VARCHAR(255),
   ${"info"} TEXT NOT NULL,`,
-  table("family")`
+  table("family", ["upper", "lower"])`
   ${["upper", "person"]},
   ${["lower", "person"]},
   UNIQUE(upper, lower),`,
-  table("signup")`
+  table("signup", ["course", "person"])`
   ${["course", "course"]},
   ${["person", "person"]},`,
-  table("record")`
+  table("record", ["signup"], ["began", "ended"])`
   ${["signup", "signup"]},
   ${"began"} TIMESTAMP,
   ${"ended"} TIMESTAMP,`,
