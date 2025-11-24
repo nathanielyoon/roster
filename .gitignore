@@ -1,6 +1,5 @@
 LOG.md
 **/*.db
-/src/main.ts
 worker.js
-./node_modules/
-./.wrangler/
+node_modules
+.wrangler

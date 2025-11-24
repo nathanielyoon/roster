@@ -19,17 +19,19 @@ const table =
     return `${sql}${$[columns.length].replace(/,$/, "")}
 );
 CREATE TRIGGER IF NOT EXISTS update_timestamp_${name}
-AFTER UPDATE OF ${columns.join(", ")} ON ${name}
+AFTER UPDATE OF ${
+      columns.map(($) => Array.isArray($) ? $[0] : $).join(", ")
+    } ON ${name}
 BEGIN
   UPDATE ${name} SET updated = CURRENT_TIMESTAMP WHERE id = NEW.id;
 END;
 ${
-      indexes.map(($) =>
+      indexes.map((index) =>
         `CREATE UNIQUE INDEX IF NOT EXISTS ${
-          $.join("_")
-        }_${table} ON ${table} (${$.join(", ")})`
-      )
-    };`;
+          index.join("_")
+        }_${name} ON ${name} (${index.join(", ")});`
+      ).join("\n")
+    }`;
   };
 export const CREATE = [
   "PRAGMA foreign_keys = ON;",
