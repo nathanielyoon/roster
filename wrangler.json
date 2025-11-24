@@ -13,6 +13,6 @@
     }
   ],
   "build": {
-    "command": "deno bundle --output ./worker.js ./src/router.ts"
+    "command": "deno bundle --quiet --output ./worker.js ./src/router.ts"
   }
 }
